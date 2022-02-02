@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/style.css" rel="stylesheet">
+    <title>Document Page</title>
+</head>
+<body>
+    <div>
+        <form action="php/search.php">
+            <input class="plainText" type="text" onkeydown="find()">
+            <div id="answer">Text</div>
+        </form>
+    </div>
+</body>
+
+<script>
+    function find() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "php/search.php", false);
+        xhr.send();
+        var div = document.getElementById("answer");
+        div.innerText = xhr.responseText;
+    }
+</script>
+
+</html>
