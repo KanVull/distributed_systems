@@ -9,7 +9,7 @@
 </head>
 <body>
     <div>
-        <form action="php/search.php">
+        <form>
             <input class="plainText" type="text" onkeydown="find()">
             <div id="answer">Text</div>
         </form>
@@ -19,10 +19,15 @@
 <script>
     function find() {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "php/search.php", false);
+        xhr.open("GET", "http://localhost/hello.php", false);
+        xhr.onload = function() {
+            var div = document.getElementById("answer");
+            div.innerText = this.responseText;
+        }
+        xhr.onerror = function() {
+            alert( 'Ошибка ' + this.status );
+        }
         xhr.send();
-        var div = document.getElementById("answer");
-        div.innerText = xhr.responseText;
     }
 </script>
 
