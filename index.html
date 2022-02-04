@@ -4,31 +4,67 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/style.css" rel="stylesheet">
+    <link href="./css/style.css" rel="stylesheet">
     <title>Document Page</title>
 </head>
 <body>
-    <div>
+    <div class="page">
         <form>
-            <input class="plainText" type="text" onkeydown="find()">
-            <div id="answer">Text</div>
+            <div class="searchWindow">
+                <div class="searchField">
+                    <input id="input" name="input" class="textHolder" type="text" autocomplete="off">
+                </div>
+                <div id="contentBox" class="contentSearched">
+                    <div class="line"></div>
+                    <ul id="list" class="items">
+                    </ul>    
+                </div>
+            </div>
         </form>
     </div>
 </body>
 
-<script>
-    function find() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://localhost/hello.php", false);
-        xhr.onload = function() {
-            var div = document.getElementById("answer");
-            div.innerText = this.responseText;
-        }
-        xhr.onerror = function() {
-            alert( 'Ошибка ' + this.status );
-        }
-        xhr.send();
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("#input").keyup(function(){
+            inputText = document.getElementById("input").value;
+            if (inputText.length >= 2) {
+                $.ajax({
+                    type: 'post',
+                    url: "http://localhost/php/hello.php",
+                    data: {'word': inputText},
+                    responce: 'text',
+                    success: function(data){
+                        showContent(data);
+                    }
+                })
+                console.log(inputText);
+            }    
+            else 
+                showContent("")
+        })
+    })
+
+    function showContent(data) {
+        console.log(1)
+        if (data.length > 0) {
+            document.getElementById("contentBox").style.display = "block";
+            var words = ""
+            data.split(';').forEach(item => {
+                words += '<li class="item">'+item+'</li>';
+            });
+            document.getElementById("list").innerHTML = words
+        } 
+        else
+            document.getElementById("contentBox").style.display = "none";
     }
+
+    $("#contentBox").on('click', 'li', function(){
+        word = $(this).text();
+        document.getElementById("input").value = word;
+        showContent("");
+    })
 </script>
 
 </html>
