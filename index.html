@@ -8,15 +8,16 @@
     <title>Document Page</title>
 </head>
 <body>
-    <div class="page">
+    <div id="app" class="page">
         <form>
             <div class="searchWindow">
                 <div class="searchField">
-                    <input id="input" name="input" class="textHolder" type="text" autocomplete="off">
+                    <input id="input" v-model="input" placeholder="Search your word..." class="textHolder" type="text" autocomplete="off" v-on:input="findSimilar">
                 </div>
-                <div id="contentBox" class="contentSearched">
+                <div v-if="items.length > 0" id="contentBox" class="contentSearched">
                     <div class="line"></div>
                     <ul id="list" class="items">
+                        <li @click="setWord" v-for="item in items" class="item">{{item.title}}</li>
                     </ul>    
                 </div>
             </div>
@@ -24,10 +25,46 @@
     </div>
 </body>
 
+<script src="./js/vue.js"></script>
+<script>
+     var app = new Vue({
+        el: '#app',
+        data: {
+            input: "",
+            items: [],
+            placeholder: "Search your word..."
+        },
+        methods: {
+            findSimilar: function(event){
+                if (event.target.value.length > 2) {
+                    const requestOptions = {
+                        method: "POST",
+                        mode: 'cors',
+                        headers: 
+                        { 
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ word: event.target.value })
+                    };
+                    fetch("http://localhost/php/hello.php", requestOptions)
+                        .then(response => response.json())
+                        .then(data => console.log(data));
+                    
+                } else {
+                    this.items = []
+                }
+            },
+            setWord: function(event){
+                this.input = event.target.textContent;
+                this.items = [];
+            }
+        }
+    })
+</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script type="text/javascript">
     $(function(){
-        $("#input").keyup(function(){
+        $("#input3").keyup(function(){
             inputText = document.getElementById("input").value;
             if (inputText.length >= 2) {
                 $.ajax({
@@ -47,7 +84,6 @@
     })
 
     function showContent(data) {
-        console.log(1)
         if (data.length > 0) {
             document.getElementById("contentBox").style.display = "block";
             var words = ""
