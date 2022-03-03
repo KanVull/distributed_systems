@@ -35,20 +35,26 @@
             placeholder: "Search your word..."
         },
         methods: {
+            setItems: function(data){
+                this.items = []
+                console.log(data);
+                console.log(data['data'][0]['word'])
+                data['data'].forEach(obj => {
+                    this.items.push({title: obj['word']})
+                });
+                console.log(this.items)
+            },
             findSimilar: function(event){
                 if (event.target.value.length > 2) {
                     const requestOptions = {
                         method: "POST",
                         mode: 'cors',
-                        headers: 
-                        { 
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ word: event.target.value })
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ "word": event.target.value })
                     };
                     fetch("http://localhost/php/hello.php", requestOptions)
                         .then(response => response.json())
-                        .then(data => console.log(data));
+                        .then(data => this.setItems(data));
                     
                 } else {
                     this.items = []
@@ -61,46 +67,4 @@
         }
     })
 </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript">
-    $(function(){
-        $("#input3").keyup(function(){
-            inputText = document.getElementById("input").value;
-            if (inputText.length >= 2) {
-                $.ajax({
-                    type: 'post',
-                    url: "http://localhost/php/hello.php",
-                    data: {'word': inputText},
-                    responce: 'text',
-                    success: function(data){
-                        showContent(data);
-                    }
-                })
-                console.log(inputText);
-            }    
-            else 
-                showContent("")
-        })
-    })
-
-    function showContent(data) {
-        if (data.length > 0) {
-            document.getElementById("contentBox").style.display = "block";
-            var words = ""
-            data.split(';').forEach(item => {
-                words += '<li class="item">'+item+'</li>';
-            });
-            document.getElementById("list").innerHTML = words
-        } 
-        else
-            document.getElementById("contentBox").style.display = "none";
-    }
-
-    $("#contentBox").on('click', 'li', function(){
-        word = $(this).text();
-        document.getElementById("input").value = word;
-        showContent("");
-    })
-</script>
-
 </html>
