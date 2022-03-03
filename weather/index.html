@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="./css/style.css" rel="stylesheet">
+        <title>My Weather</title>
+    </head>
+    <body>
+        <div id="app" class="page">
+            
+        </div>
+    </body>
+
+    <script src="./js/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                input: "",
+            },
+            beforeMount(){
+                this.getData();
+            },
+            methods: {
+                getData: function() {
+                    const requestOptions = {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ "time": 0 })
+                    };
+                    fetch("./php/getWeather.php", requestOptions)
+                        .then(response => response.json())
+                        .then(data => this.setData(data));
+                },
+                setData: function(data){
+                    console.log(data['weather'])
+                }
+            }
+        })
+    </script>   
+
+</html>
