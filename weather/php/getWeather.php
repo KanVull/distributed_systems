@@ -1,21 +1,19 @@
 <?php
-    // https://yandex.ru/pogoda/murom
     $_data = json_decode(file_get_contents('php://input'), true);
     header('Content-Type: application/json; charset=utf-8');
-    $ch = curl_init('https://yandex.ru/pogoda/murom');
+    $ch = curl_init('https://world-weather.ru/pogoda/russia/murom/');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_HEADER, false);
     $page = curl_exec($ch);
     curl_close($ch);
 
-    // <span class="temp__value temp__value_with-unit">−2</span>
-
-    $c = preg_match("\<span class=\"temp__value temp__value_with-unit\"\>*\<\/span\>", $page, $weather);
-    $s = $weather[0];
+    $s = preg_match("/now-number\">.{1,5}<span>/", $page, $weather);
+    $weather = $weather[0];
+    $weather = substr(substr($weather, 12), 0, -6);
 
     $response = [];
-    $response["weather"] = $page;
+    $response["weather"] = $weather;
     
     echo json_encode($response);
 
