@@ -8,12 +8,23 @@
     $page = curl_exec($ch);
     curl_close($ch);
 
+    $s = preg_match("/прогноз погоды в .{1,20} на сегодня/", $page, $city);
+    $city = $city[0];
     $s = preg_match("/now-number\">.{1,5}<span>/", $page, $weather);
     $weather = $weather[0];
     $weather = substr(substr($weather, 12), 0, -6);
+    $s = preg_match("/Восход:<\/span>.{1,9}<span>/", $page, $sunrise);
+    $sunrise = $sunrise[0];
+    $sunrise = substr(substr($sunrise, 0, -7), -5);
+    $s = preg_match("/Заход:<\/span>.{1,9}<\/li>/", $page, $sunshine);
+    $sunshine = $sunshine[0];
+    $sunshine = substr(substr($sunshine, 0, -5), -5);
 
     $response = [];
     $response["weather"] = $weather;
+    $response["sunrise"] = $sunrise;
+    $response["sunshine"] = $sunshine;
+    $response["city"] = $city;
     
     echo json_encode($response);
 

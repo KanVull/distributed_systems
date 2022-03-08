@@ -9,7 +9,10 @@
     </head>
     <body>
         <div id="app" class="page">
-            
+            <h1>{{city}}</h1>
+            <h2>Температура: {{weather}}</h2>
+            <h2>Время восхода: {{sunrise}}</h2>
+            <h2>Время заката: {{sunshine}}</h2>
         </div>
     </body>
 
@@ -18,7 +21,10 @@
         var app = new Vue({
             el: '#app',
             data: {
-                input: "",
+                city: "",
+                weather: "",
+                sunrise: "",
+                sunshine: "",
             },
             beforeMount(){
                 this.getData();
@@ -35,7 +41,10 @@
                         .then(data => this.setData(data));
                 },
                 setData: function(data){
-                    console.log(data['weather'])
+                    this.city = data["city"];
+                    this.weather = data["weather"];
+                    this.sunrise = data["sunrise"];
+                    this.sunshine = data["sunshine"];
                 }
             }
         })
